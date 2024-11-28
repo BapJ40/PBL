@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User.js');
-const jwt = require('jsonwebtoken');
 
 async function login(req, res) {
     const { username, password } = req.body;
@@ -13,9 +12,6 @@ async function login(req, res) {
         if (user && await bcrypt.compare(password, user.password)) {
             // Iniciar sesión (guardar el ID del usuario en la sesión)
             req.session.userId = user.id;
-            const token = jwt.sign({ userId: user.id }, 'papu', { expiresIn: '1h' });
-            req.session.token = token;
-            res.cookie('jwt', token, { httpOnly: true });
             return res.redirect('/sadi');
         } else {
             return res.render('login', { error: 'Credenciales incorrectas' });
